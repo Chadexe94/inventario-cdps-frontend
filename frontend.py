@@ -2,6 +2,10 @@ import flet as ft
 import requests
 import os
 
+# Compatibilidad de colores para versiones recientes de Flet
+if not hasattr(ft, "Colors"):
+    ft.Colors = ft.colors
+
 BASE_URL = "https://inventario-cdps-backend.onrender.com/api"
 
 BACKEND_URL = f"{BASE_URL}/productos/"
