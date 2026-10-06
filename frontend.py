@@ -1,5 +1,6 @@
 import flet as ft
 import requests
+import os
 
 BASE_URL = "https://inventario-cdps-backend.onrender.com/api"
 
@@ -849,4 +850,6 @@ def main(page: ft.Page):
     page.add(login_view)
 
 if __name__ == "__main__":
-    ft.app(target=main, view=ft.AppView.WEB_BROWSER, host="0.0.0.0", port=8550)
+    # Toma el puerto asignado por Render automáticamente o usa el 8550 por defecto en local
+    port = int(os.environ.get("PORT", 8550))
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER, host="0.0.0.0", port=port)
