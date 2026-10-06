@@ -854,6 +854,11 @@ def main(page: ft.Page):
     page.add(login_view)
 
 if __name__ == "__main__":
-    # Toma el puerto asignado por Render automáticamente o usa el 8550 por defecto en local
-    port = int(os.environ.get("PORT", 8550))
-    ft.app(target=main, view=ft.AppView.WEB_BROWSER, host="0.0.0.0", port=port)
+    # Render asigna el puerto en la variable PORT (usualmente 10000)
+    port_env = int(os.environ.get("PORT", 8550))
+    ft.app(
+        target=main,
+        view=ft.AppView.WEB_BROWSER,
+        host="0.0.0.0",
+        port=port_env
+    )
