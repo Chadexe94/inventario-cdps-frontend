@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+psycopg2-binary
+openpyxl
+reportlab
+passlib[bcrypt]
+bcrypt==4.0.1
+python-jose[cryptography]
+python-multipart
+flet
+requests
