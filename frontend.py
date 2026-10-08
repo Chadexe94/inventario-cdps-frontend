@@ -669,22 +669,45 @@ def main(page: ft.Page):
         username, password = user_input.value.strip(), pass_input.value.strip()
         if not username or not password:
             lbl_login_error.value = "Ingrese usuario y contraseña."
+            lbl_login_error.color = ft.colors.RED_400
             page.update()
             return
 
+        # Aviso visual mientras la instancia despierta
+        lbl_login_error.value = "Conectando con el servidor en la nube... Espere un momento ⏳"
+        lbl_login_error.color = ft.colors.AMBER_400
+        page.update()
+
         try:
-            resp = requests.post(LOGIN_URL, data={"username": username, "password": password})
+            # timeout=60 da margen suficiente para el 'cold start' de Render
+            resp = requests.post(
+                LOGIN_URL, 
+                data={"username": username, "password": password}, 
+                timeout=60
+            )
+            
             if resp.status_code == 200:
                 data = resp.json()
                 session["token"], session["username"] = data["access_token"], username
                 session["nombre"], session["rol"] = data["nombre"], data["rol"]
                 lbl_login_error.value = ""
                 iniciar_panel_principal()
-            else:
-                lbl_login_error.value = "Credenciales incorrectas."
+            elif resp.status_code == 400:
+                lbl_login_error.color = ft.colors.RED_400
+                lbl_login_error.value = "Usuario o contraseña incorrectos."
                 page.update()
+            else:
+                lbl_login_error.color = ft.colors.RED_400
+                lbl_login_error.value = f"Error del servidor ({resp.status_code}). Intente de nuevo."
+                page.update()
+
+        except requests.exceptions.Timeout:
+            lbl_login_error.color = ft.colors.AMBER_400
+            lbl_login_error.value = "El servidor estaba en reposo y está iniciando. Haga clic en Iniciar Sesión de nuevo."
+            page.update()
         except Exception as ex:
-            lbl_login_error.value = f"Error al conectar: {ex}"
+            lbl_login_error.color = ft.colors.RED_400
+            lbl_login_error.value = f"Error de conexión: {ex}"
             page.update()
 
     login_view = ft.Container(
